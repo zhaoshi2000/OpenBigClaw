@@ -1,13 +1,20 @@
 ---
-summary: "Why a generated image or PDF was not delivered to chat"
+summary: "Troubleshoot images and other attachments sent to or from chat"
 title: "Media and attachments"
 read_when:
   - A skill produced a file but nothing was sent
+  - A chat image arrived but the agent could not see its contents
 ---
 
 ## Media and attachments
 
 <AccordionGroup>
+  <Accordion title="The agent received my image but says it cannot see it">
+    Check the active model's input capability with `openclaw models list --json`. A custom or proxied vision model must have `input: ["text", "image"]` in its `models.providers.<provider>.models[]` entry. If it is declared as text-only, OpenClaw omits native image input even when the chat channel downloaded the file successfully. See [Custom providers](/concepts/model-providers/custom-providers).
+
+    Update the matching model entry, then check that the model list shows `text+image`. Send a fresh image to test the change; an image omitted from an earlier turn is not automatically added to a later text-only message. If the model is already image-capable, check the channel's media download logs and confirm the attachment was saved before the agent run.
+
+  </Accordion>
   <Accordion title="My skill generated an image/PDF, but nothing was sent">
     Outbound attachments from the agent must use structured media fields such as `media`, `mediaUrl`, `path`, or `filePath`. See [OpenClaw assistant setup](/start/openclaw) and [Agent send](/tools/agent-send).
 
